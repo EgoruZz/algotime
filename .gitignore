@@ -1,0 +1,54 @@
+# Environment files
+.env
+.envs/
+!.envs/*.example
+
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+migrations/
+/media/
+/staticfiles/
+/static/
+
+# Database
+*.sqlite3
+*.sqlite
+*.db
+
+# Python
+venv/
+.venv/
+env/
+.python-version
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build/install directories
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Node/npm (если используется)
+node_modules/
+npm-debug.log*
+
+# Temp files
+*.tmp
+*~

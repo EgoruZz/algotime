@@ -1,0 +1,95 @@
+{% extends "blog/base.html" %}
+{% load markdown_deux_tags %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <h2 class="mb-4">
+                {% if query %}
+                    Результаты поиска: "{{ query }}"
+                {% else %}
+                    Поиск по статьям
+                {% endif %}
+            </h2>
+            
+            {% if results %}
+                {% for article in results %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="card-title">
+                            <a href="{% url 'blog:article_detail' article.slug %}"></a>
+                                {{ article.title }}
+                            </a>
+                        </h3>
+                        <p class="text-muted small mb-2">
+                            Опубликовано: {{ article.pub_date|date:"d.m.Y" }} | 
+                            Категория: {{ article.category.name }}
+                            {% if article.tags.exists %}
+                                | Теги: 
+                                {% for tag in article.tags.all %}
+                                    <span class="badge bg-secondary">{{ tag.name }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </p>
+                        <div class="card-text markdown-content">
+                            {{ article.content|truncatechars:300|markdown }}
+                        </div>
+                        <a href="{% url 'blog:article_detail' article.slug %}" class="btn btn-primary mt-3">Читать полностью</a>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <!-- Пагинация -->
+                <div class="pagination mt-4">
+                    <span class="step-links">
+                        {% if results.has_previous %}
+                            <a href="?q={{ query }}&page=1" class="btn btn-outline-primary">&laquo; Первая</a>
+                            <a href="?q={{ query }}&page={{ results.previous_page_number }}" class="btn btn-outline-primary">Назад</a>
+                        {% endif %}
+
+                        <span class="current px-2">
+                            Страница {{ results.number }} из {{ results.paginator.num_pages }}
+                        </span>
+
+                        {% if results.has_next %}
+                            <a href="?q={{ query }}&page={{ results.next_page_number }}" class="btn btn-outline-primary">Вперед</a>
+                            <a href="?q={{ query }}&page={{ results.paginator.num_pages }}" class="btn btn-outline-primary">Последняя &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
+
+            {% else %}
+                <div class="alert alert-info">
+                    {% if query %}
+                        По запросу "{{ query }}" ничего не найдено.
+                    {% else %}
+                        Введите поисковый запрос в форме выше.
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Боковая панель -->
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    Новый поиск
+                </div>
+                <div class="card-body">
+                    <form action="{% url 'blog:search' %}" method="get">
+                        <div class="input-group">
+                            <input type="text" 
+                                   class="form-control" 
+                                   name="q" 
+                                   value="{{ query }}"
+                                   placeholder="Введите запрос">
+                            <button class="btn btn-primary" type="submit">Искать</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

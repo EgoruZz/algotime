@@ -1,0 +1,78 @@
+{% load static %}
+{% load humanize %}
+
+<div class="comment" id="comment-{{ comment.id }}" itemprop="comment" itemscope itemtype="https://schema.org/Comment">
+    <div class="comment-inner">
+        <div class="comment-header">
+            <div class="comment-author-info" itemprop="author" itemscope itemtype="https://schema.org/Person">
+                <span class="comment-author-avatar">
+                    {% if comment.user.profile.avatar %}
+                        <img src="{{ comment.user.profile.avatar.url }}" alt="{{ comment.user.username }}" class="avatar" itemprop="image">
+                    {% else %}
+                        <div class="avatar-default">{{ comment.user.username|first|upper }}</div>
+                    {% endif %}
+                </span>
+                <div class="comment-author-details">
+                    <strong class="comment-author" itemprop="name">{{ comment.user.username }}</strong>
+                    <span class="comment-date" title="{{ comment.created_at }}" itemprop="dateCreated">
+                        {{ comment.created_at|naturaltime }}
+                    </span>
+                </div>
+            </div>
+            
+            {% if user.is_authenticated %}
+            <div class="comment-actions">
+                <button class="btn btn-sm btn-reply" 
+                        data-comment-id="{{ comment.id }}"
+                        aria-label="Ответить">
+                    <i class="bi bi-reply"></i>
+                </button>
+                {% if user == comment.user or user.is_staff %}
+                <button class="btn btn-sm btn-delete" 
+                        data-comment-id="{{ comment.id }}"
+                        aria-label="Удалить">
+                    <i class="bi bi-trash"></i>
+                </button>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="comment-content" itemprop="text">
+            {% if comment.is_deleted %}
+                <div class="comment-deleted">
+                    <i class="bi bi-trash"></i> Комментарий удален
+                </div>
+            {% else %}
+                <div class="comment-text">{{ comment.text|linebreaksbr }}</div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if user.is_authenticated and not comment.is_deleted %}
+    <div class="reply-form" id="reply-form-{{ comment.id }}">
+        <form method="post" action="{% url 'blog:add_comment' %}" class="comment-form">
+            {% csrf_token %}
+            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+            <input type="hidden" name="content_type" value="article">
+            <input type="hidden" name="object_id" value="{{ article.id }}">
+            
+            <div class="form-group">
+                <textarea name="text" class="form-control" 
+                          placeholder="Ваш ответ..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">
+                <i class="bi bi-send"></i> Отправить ответ
+            </button>
+        </form>
+    </div>
+    {% endif %}
+
+    {% if comment.replies.all %}
+    <div class="comment-replies" itemprop="reply" itemscope itemtype="https://schema.org/UserComments">
+        {% for reply in comment.replies.all %}
+            {% include 'blog/comment_item.html' with comment=reply %}
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>

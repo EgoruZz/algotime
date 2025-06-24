@@ -1,0 +1,230 @@
+{% load static i18n %}
+
+<!DOCTYPE html>
+<html lang="ru" data-bs-theme="auto">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% block meta_description %}Блог об алгоритмах и программировании{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}алгоритмы, программирование, Python, Django{% endblock %}">
+    <meta name="theme-color" content="#212529">
+    <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
+
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'blog/img/favicon.ico' %}" type="image/x-icon">
+    <link rel="apple-touch-icon" href="{% static 'blog/img/apple-touch-icon.png' %}">
+    <link rel="manifest" href="{% static 'blog/manifest.webmanifest' %}">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <!-- Preload critical assets -->
+    <link rel="preload" href="{% static 'blog/css/custom.css' %}" as="style">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style">
+    
+    <!-- Preload CSS -->
+    <link rel="preload" href="{% static 'blog/css/articles.css' %}" as="style">
+    <link rel="preload" href="{% static 'blog/css/comments.css' %}" as="style">
+
+    <!-- Подключение -->
+    <link rel="stylesheet" href="{% static 'blog/css/articles.css' %}">
+    <link rel="stylesheet" href="{% static 'blog/css/comments.css' %}">
+    
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" 
+          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+    <link rel="stylesheet" href="{% static 'blog/css/markdown.css' %}">
+    <link rel="stylesheet" href="{% static 'blog/css/custom.css' %}">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    {% block og_tags %}
+    <meta property="og:title" content="AlgoTime - Блог об алгоритмах">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{% static 'blog/img/og-image.jpg' %}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Блог об алгоритмах и программировании">
+    <meta property="og:site_name" content="AlgoTime">
+    {% endblock %}
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AlgoTime - Блог об алгоритмах">
+    <meta name="twitter:description" content="Блог об алгоритмах и программировании">
+    <meta name="twitter:image" content="{% static 'blog/img/og-image.jpg' %}">
+    
+    <title>{% block title %}AlgoTime - Блог об алгоритмах{% endblock %}</title>
+
+    <!-- Preload scripts -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" as="script">
+    <link rel="preload" href="{% static 'blog/js/main.js' %}" as="script">
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "AlgoTime",
+        "url": "{{ request.build_absolute_uri }}",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "{% url 'blog:search' %}?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+</head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+    <!-- Навигация -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'blog:home' %}">
+                <img src="{% static 'blog/img/logo.svg' %}" alt="AlgoTime Logo" height="30" class="me-2">
+                AlgoTime
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" 
+                    aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'blog:home' %}">Главная</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            Категории
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% for category in categories %}
+                                <li><a class="dropdown-item" href="{% url 'blog:category' category.slug %}">{{ category.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+                
+                <form class="d-flex me-2 my-2 my-lg-0" action="{% url 'blog:search' %}" method="get" role="search">
+                    <div class="input-group">
+                        <input class="form-control" type="search" name="q" placeholder="Поиск..." 
+                               aria-label="Search" required minlength="3">
+                        <button class="btn btn-outline-light" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
+                
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle me-1"></i> {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            {% if user.is_staff %}
+                            <li><a class="dropdown-item" href="{% url 'admin:index' %}"><i class="bi bi-speedometer2 me-2"></i>Админка</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            {% endif %}
+                            <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right me-2"></i>Выйти</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}?next={{ request.path }}"><i class="bi bi-box-arrow-in-right me-1"></i>Войти</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <main class="container flex-grow-1 py-4">
+        {% include 'blog/partials/messages.html' %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Подвал -->
+    <footer class="bg-dark text-white py-4 mt-auto">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h5>AlgoTime</h5>
+                    <p class="text-muted">Блог об алгоритмах и программировании. Изучаем сложные концепты простыми словами.</p>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <h5>Навигация</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2"><a href="{% url 'blog:home' %}" class="nav-link p-0 text-muted">Главная</a></li>
+                        {% for category in categories|slice:":5" %}
+                        <li class="nav-item mb-2"><a href="{% url 'blog:category' category.slug %}" class="nav-link p-0 text-muted">{{ category.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <h5>Соцсети</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted"><i class="bi bi-telegram me-1"></i> Telegram</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted"><i class="bi bi-github me-1"></i> GitHub</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5>Подписаться на новости</h5>
+                    <form id="newsletter-form">
+                        <div class="input-group mb-3">
+                            <input type="email" class="form-control" placeholder="Email" required>
+                            <button class="btn btn-primary" type="submit">OK</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="border-top pt-3 text-center">
+                <p class="mb-0">&copy; {% now "Y" %} AlgoTime. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" 
+            integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" 
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/javascript.min.js"></script>
+    <script src="{% static 'blog/js/main.js' %}"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Подсветка синтаксиса
+        hljs.configure({
+            languages: ['python', 'javascript', 'html', 'css', 'bash', 'sql'],
+            ignoreUnescapedHTML: true,
+            cssSelector: 'pre code'
+        });
+        hljs.highlightAll();
+        
+        // Добавляем классы Bootstrap к таблицам
+        document.querySelectorAll('table').forEach(table => {
+            table.classList.add('table', 'table-bordered', 'table-hover', 'table-striped');
+        });
+        
+        // Инициализация всплывающих подсказок
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Service Worker регистрация
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('{% static "blog/js/sw.js" %}')
+                .then(registration => console.log('ServiceWorker registered'))
+                .catch(err => console.log('ServiceWorker registration failed: ', err));
+        }
+    });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

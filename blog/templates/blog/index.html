@@ -1,0 +1,88 @@
+{% extends "blog/base.html" %}
+{% load cache %}
+
+{% block title %}AlgoTime - Последние статьи{% endblock %}
+{% block meta_description %}Последние статьи о программировании и алгоритмах{% endblock %}
+{% block meta_keywords %}программирование, алгоритмы, Python, Django, разработка{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h1 class="mb-4">Последние статьи</h1>
+        
+        {% for article in articles %}
+        <article class="card mb-4" itemscope itemtype="https://schema.org/BlogPosting">
+            <div class="card-body">
+                <h2 class="card-title" itemprop="headline">
+                    <a href="{% url 'blog:article_detail' article.slug %}" itemprop="url">{{ article.title }}</a>
+                </h2>
+                <div class="text-muted mb-2">
+                    <small>
+                        <time itemprop="datePublished" datetime="{{ article.pub_date|date:'c' }}">
+                            {{ article.pub_date|date:"d.m.Y" }}
+                        </time>
+                        | Категория: 
+                        <a href="{% url 'blog:category' article.category.slug %}" itemprop="articleSection">
+                            {{ article.category.name }}
+                        </a>
+                    </small>
+                </div>
+                
+                <div class="mb-2" itemprop="keywords">
+                    {% for tag in article.tags.all %}
+                    <a href="{% url 'blog:tag' tag.slug %}" class="badge bg-secondary text-decoration-none me-1">
+                        {{ tag.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+                
+                <p class="card-text" itemprop="description">
+                    {{ article.content|striptags|truncatechars:200 }}
+                </p>
+                
+                <a href="{% url 'blog:article_detail' article.slug %}" class="btn btn-primary" itemprop="url">
+                    Читать далее
+                </a>
+            </div>
+        </article>
+        {% empty %}
+        <div class="alert alert-info">Статей пока нет.</div>
+        {% endfor %}
+
+        {% include 'blog/partials/pagination.html' with page_obj=articles %}
+    </div>
+
+    <aside class="col-md-4">
+        {% cache 3600 sidebar %}
+        <div class="card mb-4">
+            <div class="card-header">
+                Категории
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for category in categories %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="{% url 'blog:category' category.slug %}" class="text-decoration-none">
+                        {{ category.name }}
+                    </a>
+                    <span class="badge bg-primary rounded-pill">{{ category.articles.count }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endcache %}
+        
+        <div class="card">
+            <div class="card-header">
+                Популярные теги
+            </div>
+            <div class="card-body">
+                {% for tag in popular_tags %}
+                <a href="{% url 'blog:tag' tag.slug %}" class="badge bg-secondary text-decoration-none me-1 mb-1">
+                    {{ tag.name }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </aside>
+</div>
+{% endblock %}

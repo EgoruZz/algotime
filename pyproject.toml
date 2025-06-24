@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "algotime"
+version = "0.1.0"
+description = "Платформа для изучения алгоритмов"
+authors = [
+    {name = "Ваше Имя", email = "your@email.com"},
+]
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"  # Изменено из таблицы в строку
+
+[project.urls]
+Homepage = "https://algotime.org"
+Repository = "https://github.com/yourname/algotime"
+
+# Явно указываем пакеты
+[tool.setuptools]
+packages = ["blog", "config"]  # Только Python-пакеты
+
+[tool.setuptools.package-dir]
+blog = "blog"
+config = "config"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+Django = "^5.0"
+whitenoise = "^6.0"
+psycopg2-binary = "^2.9"
+python-dotenv = "^1.0"
+django-taggit = "^5.0"
+crispy-bootstrap5 = "^2023.10"
+
+[tool.poetry.group.dev.dependencies]
+django-debug-toolbar = "^4.0"
+ipython = "^8.0"
+django-extensions = "^3.2"
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+    | \.venv
+    | venv
+    | staticfiles
+    | migrations
+)/
+'''

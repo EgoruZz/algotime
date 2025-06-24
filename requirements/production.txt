@@ -1,0 +1,4 @@
+-r base.txt
+gunicorn==20.1
+sentry-sdk==1.0
+django-redis==5.0

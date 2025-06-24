@@ -1,0 +1,91 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Статьи категории {{ category.name }} | AlgoTime{% endblock %}
+{% block description %}Все статьи категории {{ category.name }} на AlgoTime{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="mb-4">Категория: {{ category.name }}</h1>
+            
+            {% if articles %}
+                {% for article in articles %}
+                <article class="card mb-4" itemscope itemtype="https://schema.org/Article">
+                    <div class="card-body">
+                        <h2 itemprop="headline">
+                            <a href="{% url 'blog:article_detail' article.slug %}" class="text-decoration-none">
+                                {{ article.title }}
+                            </a>
+                        </h2>
+                        <div class="text-muted small mb-2">
+                            <span itemprop="datePublished" content="{{ article.pub_date|date:'c' }}">
+                                {{ article.pub_date|date:"d.m.Y" }}
+                            </span>
+                            {% if article.tags.exists %}
+                                | Теги:
+                                {% for tag in article.tags.all %}
+                                <a href="{% url 'blog:tag' tag.slug %}" class="badge bg-secondary text-decoration-none me-1">
+                                    {{ tag.name }}
+                                </a>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="card-text markdown-content" itemprop="description">
+                            {{ article.content|truncatechars:300 }}
+                        </div>
+                        <a href="{% url 'blog:article_detail' article.slug %}" class="btn btn-primary mt-3">Читать полностью</a>
+                    </div>
+                </article>
+                {% endfor %}
+
+                <!-- Пагинация -->
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        {% if articles.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1" aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ articles.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        <li class="page-item disabled">
+                            <span class="page-link">
+                                Страница {{ articles.number }} из {{ articles.paginator.num_pages }}
+                            </span>
+                        </li>
+                        
+                        {% if articles.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ articles.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ articles.paginator.num_pages }}" aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% else %}
+                <div class="alert alert-info">
+                    В этой категории пока нет статей.
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Боковая панель -->
+        <div class="col-md-4">
+            {% include "blog/partials/category_sidebar.html" %}
+        </div>
+    </div>
+</div>
+{% endblock %}

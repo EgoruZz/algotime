@@ -1,0 +1,195 @@
+/* Основные стили для Markdown контента */
+.markdown-content {
+    line-height: 1.8;
+    color: #333;
+    font-size: 1.1rem;
+    overflow-wrap: break-word;
+}
+
+/* Заголовки */
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+    margin: 1.5em 0 1rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #222;
+}
+
+.markdown-content h1 { font-size: 2rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
+.markdown-content h2 { font-size: 1.75rem; border-bottom: 1px solid #f5f5f5; padding-bottom: 0.4rem; }
+.markdown-content h3 { font-size: 1.5rem; }
+.markdown-content h4 { font-size: 1.25rem; }
+.markdown-content h5 { font-size: 1.1rem; }
+.markdown-content h6 { font-size: 1rem; color: #6c757d; }
+
+/* Параграфы и текст */
+.markdown-content p {
+    margin: 0 0 1.5rem;
+}
+
+.markdown-content strong {
+    font-weight: 700;
+    color: #222;
+}
+
+.markdown-content em {
+    font-style: italic;
+}
+
+.markdown-content del {
+    text-decoration: line-through;
+    color: #6c757d;
+}
+
+/* Списки */
+.markdown-content ul,
+.markdown-content ol {
+    margin: 0 0 1.5rem 1.5rem;
+    padding: 0;
+}
+
+.markdown-content li {
+    margin-bottom: 0.5rem;
+}
+
+.markdown-content li > p {
+    margin: 0;
+}
+
+.markdown-content ul {
+    list-style-type: disc;
+}
+
+.markdown-content ol {
+    list-style-type: decimal;
+}
+
+/* Блоки кода */
+.markdown-content pre {
+    background: #282c34;
+    padding: 1.25rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.markdown-content code {
+    font-family: 'Fira Code', 'SFMono-Regular', Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.9em;
+}
+
+.markdown-content pre code {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    color: #abb2bf;
+}
+
+/* Инлайн код */
+.markdown-content :not(pre) > code {
+    background: rgba(175, 184, 193, 0.2);
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    color: #e06c75;
+}
+
+/* Цитаты */
+.markdown-content blockquote {
+    margin: 1.5rem 0;
+    padding: 0.5rem 1.5rem;
+    border-left: 4px solid #dee2e6;
+    color: #6c757d;
+    background-color: #f8f9fa;
+    border-radius: 0 4px 4px 0;
+}
+
+.markdown-content blockquote p {
+    margin: 0;
+}
+
+/* Горизонтальные линии */
+.markdown-content hr {
+    border: 0;
+    height: 1px;
+    background: #dee2e6;
+    margin: 2rem 0;
+}
+
+/* Таблицы */
+.markdown-content table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    display: block;
+}
+
+.markdown-content th,
+.markdown-content td {
+    padding: 0.75rem;
+    border: 1px solid #dee2e6;
+}
+
+.markdown-content th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    text-align: left;
+}
+
+.markdown-content tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+/* Ссылки */
+.markdown-content a {
+    color: #0d6efd;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.markdown-content a:hover {
+    color: #0a58ca;
+    text-decoration: underline;
+}
+
+/* Изображения */
+.markdown-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin: 1.5rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .markdown-content {
+        font-size: 1rem;
+    }
+    
+    .markdown-content h1 { font-size: 1.75rem; }
+    .markdown-content h2 { font-size: 1.5rem; }
+    .markdown-content h3 { font-size: 1.25rem; }
+    
+    .markdown-content pre {
+        padding: 1rem;
+        border-radius: 0;
+    }
+    
+    /* Адаптация формы поиска */
+    .navbar .d-flex {
+        width: 100%;
+        margin: 10px 0;
+    }
+}
+
+/* Подсветка синтаксиса (опционально) */
+.markdown-content .hljs-keyword { color: #c678dd; }
+.markdown-content .hljs-built_in { color: #e06c75; }
+.markdown-content .hljs-string { color: #98c379; }
+.markdown-content .hljs-comment { color: #5c6370; font-style: italic; }

@@ -1,0 +1,27 @@
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        О категории
+    </div>
+    <div class="card-body">
+        {% if category.description %}
+            <p>{{ category.description }}</p>
+        {% else %}
+            <p class="text-muted">Описание категории отсутствует</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        Популярные теги
+    </div>
+    <div class="card-body">
+        {% for tag in popular_tags %}
+            <a href="{% url 'blog:tag' tag.slug %}" class="badge bg-secondary text-decoration-none me-1 mb-1">
+                {{ tag.name }}
+            </a>
+        {% empty %}
+            <p class="text-muted">Теги не найдены</p>
+        {% endfor %}
+    </div>
+</div>

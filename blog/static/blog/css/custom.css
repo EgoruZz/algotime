@@ -1,0 +1,42 @@
+/* Базовые стили комментариев */
+.comment {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border-left: 3px solid #6c757d;
+}
+
+.comment-inner {
+    position: relative;
+}
+
+/* Аватарки */
+.comment-author-avatar .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.avatar-default {
+    width: 40px;
+    height: 40px;
+    /* ... остальные стили ... */
+}
+
+/* Темная тема */
+[data-bs-theme="dark"] .comment {
+    background-color: #2d3748;
+    border-left-color: #4a5568;
+}
+
+/* Адаптивность */
+@media (max-width: 576px) {
+    .comment {
+        padding: 0.75rem;
+    }
+    .comment-replies {
+        margin-left: 1rem;
+    }
+}
