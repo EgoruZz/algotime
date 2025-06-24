@@ -11,7 +11,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: test_db  # Специальная тестовая БД
+          POSTGRES_DB: test_db  # Создаем БД автоматически при старте контейнера
         ports:
           - 5432:5432
         options: >-
@@ -27,24 +27,14 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
-    
+        
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install --upgrade -r requirements/dev.txt
-        pip check  # Проверка конфликтов
+        pip install -r requirements/dev.txt
         
-    - name: Create test database
-      env:
-        DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
-      run: |
-        python -c "
-        import psycopg2
-        conn = psycopg2.connect('postgres://postgres:postgres@localhost:5432/postgres')
-        conn.autocommit = True
-        cursor = conn.cursor()
-        cursor.execute('CREATE DATABASE test_db;')
-        "
+    - name: Wait for PostgreSQL
+      run: sleep 5  # Даем время PostgreSQL полностью запуститься
         
     - name: Run migrations
       env:
