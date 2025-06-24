@@ -3,7 +3,7 @@ from .base import *
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'test_db',  # Должно совпадать с POSTGRES_DB
+        'NAME': 'algotime',  # Должно совпадать с POSTGRES_DB в workflow
         'USER': 'postgres',
         'PASSWORD': 'postgres',
         'HOST': 'localhost',
@@ -11,7 +11,7 @@ DATABASES = {
     }
 }
 
-# Ускоряем тесты
+# Ускорение тестов
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.MD5PasswordHasher',
 ]
