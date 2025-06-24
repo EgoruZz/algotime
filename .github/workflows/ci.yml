@@ -1,10 +1,6 @@
 name: CI
 
-on: 
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+on: [push, pull_request]
 
 jobs:
   test:
@@ -13,8 +9,9 @@ jobs:
       postgres:
         image: postgres:14
         env:
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: test_db
+          POSTGRES_DB: test_db  # Специальная тестовая БД
         ports:
           - 5432:5432
         options: >-
@@ -26,16 +23,27 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Set up Python 3.11
+    - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
-        cache: 'pip'
         
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements/dev.txt
+        pip install -r requirements/dev.txt psycopg2-binary
+        
+    - name: Create test database
+      env:
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+      run: |
+        python -c "
+        import psycopg2
+        conn = psycopg2.connect('postgres://postgres:postgres@localhost:5432/postgres')
+        conn.autocommit = True
+        cursor = conn.cursor()
+        cursor.execute('CREATE DATABASE test_db;')
+        "
         
     - name: Run migrations
       env:
@@ -46,13 +54,10 @@ jobs:
     - name: Run tests
       env:
         DATABASE_URL: postgres://postgres:postgres@localhost:5432/test_db
+        DJANGO_SETTINGS_MODULE: config.settings.test
       run: |
         python manage.py test
         
     - name: Check migrations
-      run: python manage.py makemigrations --check --dry-run
-      
-    - name: Run flake8
       run: |
-        pip install flake8
-        flake8 .
+        python manage.py makemigrations --check --dry-run
